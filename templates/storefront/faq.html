@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load storefront_extras %}
+
+{% block title %}{{ T.faqT }} — G&T OrthoCare{% endblock %}
+
+{% block content %}
+<div class="pagehead"><div class="wrap"><h1>{{ T.faqT }}</h1></div></div>
+<section><div class="wrap">
+  <div class="faqlist">
+    {% for f in faqs %}
+    <details {% if forloop.first %}open{% endif %}>
+      <summary>{% tr f 'question' %}</summary>
+      <div class="a">{% if LANG == 'en' and f.answer_en %}{{ f.answer_en|linebreaks }}{% else %}{{ f.answer_ka|linebreaks }}{% endif %}</div>
+    </details>
+    {% empty %}<div class="empty">—</div>{% endfor %}
+  </div>
+</div></section>
+{% endblock %}

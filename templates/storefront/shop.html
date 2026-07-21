@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load storefront_extras %}
+
+{% block title %}{% if category %}{% tr category 'name' %}{% else %}{{ T.shopT }}{% endif %} — G&T OrthoCare{% endblock %}
+
+{% block content %}
+<div class="wrap"><div class="shop">
+  <aside class="side">
+    <div class="panel"><h4>{{ T.footCats }}</h4><div class="cl">
+      <a href="{% url 'catalog:shop' %}" class="{% if not category %}on{% endif %}"><span>{{ T.all }}</span><i>{{ total }}</i></a>
+      {% for c in categories %}
+      <a href="{{ c.get_absolute_url }}" class="{% if category.pk == c.pk %}on{% endif %}"><span>{% tr c 'name' %}</span><i>{{ c.n }}</i></a>
+      {% endfor %}
+    </div></div>
+    <div class="panel dark">
+      <h4>{{ T.f2t }}</h4>
+      <p>{{ T.f2p }}</p>
+      <a class="btn p" style="font-size:13px;padding:9px 18px" href="tel:{{ SITE.phone1|cut:' ' }}">📞 {{ SITE.phone1 }}</a>
+    </div>
+  </aside>
+  <div>
+    <div class="shoptop">
+      <div>
+        <h1>{% if category %}{% tr category 'name' %}{% else %}{{ T.shopT }}{% endif %}</h1>
+        <div class="n">{{ T.found }}: {{ page.paginator.count }} {{ T.itemsN }}{% if q %} · „{{ q }}“{% endif %}</div>
+      </div>
+      <form method="get">
+        {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+        <select name="sort" onchange="this.form.submit()">
+          <option value="def" {% if sort == 'def' %}selected{% endif %}>{{ T.sortDef }}</option>
+          <option value="new" {% if sort == 'new' %}selected{% endif %}>{{ T.sortNew }}</option>
+        </select>
+      </form>
+    </div>
+    {% if page.object_list %}
+      <div class="grid">{% for p in page.object_list %}{% include "storefront/_card.html" %}{% endfor %}</div>
+      {% if page.paginator.num_pages > 1 %}
+      <div class="pagi">
+        {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}{% if q %}&q={{ q }}{% endif %}{% if sort != 'def' %}&sort={{ sort }}{% endif %}">{{ T.prev }}</a>{% endif %}
+        {% for n in page.paginator.page_range %}
+          {% if n == page.number %}<span class="cur">{{ n }}</span>
+          {% else %}<a href="?page={{ n }}{% if q %}&q={{ q }}{% endif %}{% if sort != 'def' %}&sort={{ sort }}{% endif %}">{{ n }}</a>{% endif %}
+        {% endfor %}
+        {% if page.has_next %}<a href="?page={{ page.next_page_number }}{% if q %}&q={{ q }}{% endif %}{% if sort != 'def' %}&sort={{ sort }}{% endif %}">{{ T.next }}</a>{% endif %}
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="empty">{{ T.empty }}</div>
+    {% endif %}
+  </div>
+</div></div>
+{% endblock %}

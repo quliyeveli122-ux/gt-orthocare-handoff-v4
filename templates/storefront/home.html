@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load static storefront_extras %}
+
+{% block content %}
+
+{% if banners %}
+<div class="banners">
+  <div class="track">
+    {% for b in banners %}
+    <a class="slide" {% if b.link %}href="{{ b.link }}"{% endif %}>
+      <img src="{{ b.image.url }}" alt="{% tr b 'title' %}">
+    </a>
+    {% endfor %}
+  </div>
+  {% if banners|length > 1 %}
+  <div class="dots">{% for b in banners %}<button class="{% if forloop.first %}on{% endif %}" aria-label="slide {{ forloop.counter }}"></button>{% endfor %}</div>
+  {% endif %}
+</div>
+{% else %}
+<div class="hero"><div class="wrap">
+  <div>
+    <span class="kicker"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>{{ T.heroKicker }}</span>
+    <h1>{{ T.heroTitle|safe }}</h1>
+    <p class="sub">{{ T.heroSub }}</p>
+    <div class="cta">
+      <a class="btn p" href="{% url 'catalog:shop' %}">{{ T.heroBtn }} <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+      <a class="btn w big" href="tel:{{ SITE.phone1|cut:' ' }}">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {{ SITE.phone1 }}</a>
+    </div>
+    <div class="stats">
+      <div><b>30+</b><span>{{ T.st1 }}</span></div>
+      <div><b>24</b><span>{{ T.st2 }}</span></div>
+      <div><b>1000+</b><span>{{ T.st3 }}</span></div>
+    </div>
+  </div>
+  <div class="heroimgs">
+    {% for p in hero_products %}
+    <a class="ph" href="{{ p.get_absolute_url }}">
+      {% if p.image %}<img src="{{ p.image.url }}" alt="{% tr p 'name' %}">{% endif %}
+      <div class="cap"><i>{{ p.code }}</i> · {% tr p 'name' %}</div>
+    </a>
+    {% endfor %}
+  </div>
+</div></div>
+{% endif %}
+
+<section style="padding:26px 0 0"><div class="wrap">
+  <div class="oncall-row">
+    <div class="oncall">
+      <div class="ic"><span class="dot"></span>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+      </div>
+      <div class="tx"><b>{{ T.traumaT }}</b><p>{{ T.traumaP }}</p></div>
+      <a class="btn" href="tel:{{ SITE.phone_trauma|cut:' ' }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {{ T.traumaBtn }} · {{ SITE.phone_trauma }}</a>
+    </div>
+    <div class="oncall xray">
+      <div class="ic">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M12 7v10M8.5 9.5h7M9.5 12h5M10.5 14.5h3"/></svg>
+      </div>
+      <div class="tx"><b>{{ T.xrayT }}</b><p>{{ T.xrayP }}</p></div>
+      <a class="btn" href="tel:{{ SITE.phone_xray|cut:' ' }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {{ T.traumaBtn }} · {{ SITE.phone_xray }}</a>
+    </div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><div><h2>{{ T.catsTitle }}</h2><div class="hint">{{ T.catsHint }}</div></div><a class="more" href="{% url 'catalog:shop' %}">{{ T.viewAll }}</a></div>
+  <div class="cats">
+    {% for c in categories %}
+    <a class="catcard" href="{{ c.get_absolute_url }}">
+      {% if c.image %}<img src="{{ c.image.url }}" alt="{% tr c 'name' %}">{% else %}<span class="catph" aria-hidden="true"></span>{% endif %}
+      <b>{% tr c 'name' %}</b><span>{{ c.n }} {{ T.itemsN }}</span>
+    </a>
+    {% endfor %}
+  </div>
+</div></section>
+
+{% if featured %}
+<section style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><h2>{{ T.featTitle }}</h2><div class="hint">{{ T.featHint }}</div></div><a class="more" href="{% url 'catalog:shop' %}">{{ T.viewAll }}</a></div>
+  <div class="grid">{% for p in featured %}{% include "storefront/_card.html" %}{% endfor %}</div>
+</div></section>
+{% endif %}
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><h2>{{ T.whyTitle }}</h2></div></div>
+  <div class="feats">
+    <div class="feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><b>{{ T.f1t }}</b><p>{{ T.f1p }}</p></div>
+    <div class="feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15h6M12 12v6"/></svg></div><b>{{ T.f2t }}</b><p>{{ T.f2p }}</p></div>
+    <div class="feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div><b>{{ T.f3t }}</b><p>{{ T.f3p }}</p></div>
+    <div class="feat"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><b>{{ T.f4t }}</b><p>{{ T.f4p }}</p></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="b2b">
+    <div class="tx"><h3>🩺 {{ T.b2bT }}</h3><p>{{ T.b2bP }}</p></div>
+    <a class="btn" href="tel:{{ SITE.phone1|cut:' ' }}">{{ T.b2bBtn }} →</a>
+  </div>
+</div></section>
+
+{% if posts %}
+<section style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><h2>{{ T.blogT }}</h2></div><a class="more" href="{% url 'content:blog_list' %}">{{ T.viewAll }}</a></div>
+  <div class="bloggrid">
+    {% for post in posts %}
+    <a class="post" href="{{ post.get_absolute_url }}">
+      {% if post.cover %}<img src="{{ post.cover.url }}" alt="{% tr post 'title' %}">{% else %}<span class="postph" aria-hidden="true"></span>{% endif %}
+      <div class="pb">
+        <span class="date">{{ post.published_at|date:"d.m.Y" }}</span>
+        <b>{% tr post 'title' %}</b>
+        <p>{% if LANG == 'en' and post.excerpt_en %}{{ post.excerpt_en|truncatechars:110 }}{% else %}{{ post.excerpt_ka|truncatechars:110 }}{% endif %}</p>
+        <span class="rm">{{ T.readMore }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div></section>
+{% endif %}
+
+<section id="about" style="padding-top:0"><div class="wrap">
+  <div class="shead"><div><h2>{{ T.aboutT }}</h2></div></div>
+  <p style="max-width:840px;color:var(--muted);font-size:15px">{{ T.aboutP }}</p>
+</div></section>
+
+<section id="contact" style="padding-top:26px"><div class="wrap">
+  <div class="shead"><div><h2>{{ T.contactT }}</h2></div></div>
+  {% include "storefront/_contact_block.html" with form=contact_form %}
+</div></section>
+
+{% endblock %}

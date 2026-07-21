@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}{{ T.contactT }} — G&T OrthoCare{% endblock %}
+
+{% block content %}
+<div class="pagehead"><div class="wrap"><h1>{{ T.contactT }}</h1></div></div>
+<section><div class="wrap">
+  {% include "storefront/_contact_block.html" %}
+</div></section>
+{% endblock %}

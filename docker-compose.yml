@@ -1,0 +1,63 @@
+# G&T OrthoCare — single-server production stack (~$12/mo Lightsail/VPS)
+# Postgres + Django(gunicorn) + Caddy (auto-HTTPS, serves /media from disk).
+#
+#   local test:   DOMAIN=":80" docker compose up --build   -> http://localhost
+#   production:   set DOMAIN=gtorthocare.ge in .env        -> auto HTTPS via Let's Encrypt
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gtorthocare
+      POSTGRES_USER: gt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gt -d gtorthocare"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://gt:${POSTGRES_PASSWORD}@db:5432/gtorthocare
+      MEDIA_ROOT: /app/media
+    volumes:
+      - media:/app/media        # product photos live on the server disk, survive redeploys
+    expose:
+      - "8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=5)\""]
+      interval: 30s
+      timeout: 6s
+      retries: 5
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env (use ":80" for local testing)}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - media:/srv/media:ro     # Caddy serves /media/* directly — faster than Django
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
+  media:
+  caddy_data:
+  caddy_config:

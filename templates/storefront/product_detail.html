@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load storefront_extras %}
+
+{% block title %}{{ product.code }} — {% tr product 'name' %} | G&T OrthoCare{% endblock %}
+{% block meta_description %}{% tr product 'name' %} — {{ product.code }}. G&T OrthoCare.{% endblock %}
+
+{% block content %}
+<div class="pd wrap">
+  <div class="crumb">
+    <a href="{% url 'catalog:home' %}">{{ T.home }}</a> /
+    <a href="{% url 'catalog:shop' %}">{{ T.backShop }}</a> /
+    <a href="{{ product.category.get_absolute_url }}">{% tr product.category 'name' %}</a> /
+    {{ product.code }}
+  </div>
+  <div class="pdgrid">
+    <div>
+      <div class="pdimg">{% if product.image %}<img id="pdmain" src="{{ product.image.url }}" alt="{% tr product 'name' %}">{% endif %}</div>
+      {% if product.images.all %}
+      <div class="pdthumbs">
+        {% if product.image %}<img src="{{ product.image.url }}" data-full="{{ product.image.url }}" class="on">{% endif %}
+        {% for im in product.images.all %}<img src="{{ im.image.url }}" data-full="{{ im.image.url }}" alt="{{ im.alt }}">{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="pdinfo">
+      <span class="codechip">{{ T.code }}: {{ product.code }}</span>
+      <h1>{% tr product 'name' %}</h1>
+      <a class="cat" href="{{ product.category.get_absolute_url }}">{% tr product.category 'name' %} →</a>
+      {% if LANG == 'en' and product.description_en %}<p class="d">{{ product.description_en }}</p>
+      {% elif product.description_ka %}<p class="d">{{ product.description_ka }}</p>{% endif %}
+      {% if product.size_list %}
+      <div class="opt"><div class="lb">{{ T.size }}</div>
+        <div class="sizes">
+          {% for s in product.size_list %}<span class="szchip">{{ s }}</span>{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="orderbox">
+        <div class="ob-tx">{{ T.orderPrompt }}</div>
+        <div class="pdact">
+          <a class="btn p big" href="tel:{{ SITE.phone1|cut:' ' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            {{ T.callOrder }} · {{ SITE.phone1 }}</a>
+          <a class="btn n" href="tel:{{ SITE.phone2|cut:' ' }}">{{ SITE.phone2 }}</a>
+        </div>
+      </div>
+
+      <div class="plist">
+        <div class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>{{ T.li1 }}</div>
+        <div class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>{{ T.li2 }}</div>
+        <div class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>{{ T.li3 }}</div>
+        <div class="li"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6 9 17l-5-5"/></svg>{{ T.li4 }}</div>
+      </div>
+    </div>
+  </div>
+
+  {% if related %}
+  <section style="padding-bottom:0">
+    <div class="shead"><div><h2>{{ T.related }}</h2></div><a class="more" href="{{ product.category.get_absolute_url }}">{{ T.viewAll }}</a></div>
+    <div class="grid">{% for p in related %}{% include "storefront/_card.html" %}{% endfor %}</div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}

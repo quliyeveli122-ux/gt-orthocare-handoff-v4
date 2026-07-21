@@ -1,0 +1,15 @@
+{$DOMAIN} {
+	encode gzip zstd
+
+	# uploaded product photos — served straight from disk, long cache
+	handle_path /media/* {
+		root * /srv/media
+		file_server
+		header Cache-Control "public, max-age=604800"
+	}
+
+	# everything else -> Django (gunicorn)
+	handle {
+		reverse_proxy app:8000
+	}
+}
